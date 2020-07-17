@@ -7,6 +7,8 @@ from pyquery import PyQuery as pq
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+browser = webdriver.Firefox()
+
 
 class Model(object):
     @staticmethod
@@ -64,6 +66,7 @@ class Video(Model):
     def __init__(self):
         self.id = None
         self.category = ''
+        # 存储心声.FM时,其视频集属性以名称_二级分类名组成.
         self.video_collect = ''
         self.video_name = ''
         self.thumb = ''
@@ -115,7 +118,6 @@ def page_for_url(url):
     time.sleep(random_time)
 
     user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'
-    browser = webdriver.Firefox()
     browser.get(url)
     # try:
     #     paging = browser.find_element_by_id('pager')
@@ -157,11 +159,15 @@ def collect_for_url(url, category_name):
             paging = e('#pager')
             if paging:
                 while True:
-                    browser = webdriver.Firefox()
-                    browser.get(url)
-                    WebDriverWait(browser, 2)
-                    r = browser.page_source
-                    browser.close()
+                    # 数据提取占位
+                    click_next = browser.find_element_by_css_selector('.pagination li.item:nth-child(12) ')
+                    click_next.click()
+                    WebDriverWait(browser, 3)
+                    if browser.switch_to.alert:
+                        break
+                    page = browser.page_source
+            else:
+                pass
         except:
             pass
 
